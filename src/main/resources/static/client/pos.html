@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bán hàng - POS App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/css/style.css" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="client-main">
+    <div id="layout-topbar"></div>
+
+    <!-- New order gate: split layout below the console bar, shown before an order exists -->
+    <div id="newOrderGate" class="pos-gate-split">
+    <div class="pos-hero-panel">
+      <div class="pos-hero-logo">
+        <div class="logo-box"><i class="bi bi-shop"></i></div>
+        <div class="pos-hero-logo-text">
+          <strong>POS App</strong>
+          <small>Nhanh chóng · Chính xác · Hiệu quả</small>
+        </div>
+      </div>
+
+      <div class="pos-hero-headline">
+        <span class="pos-hero-tag"><i class="bi bi-circle-fill"></i> POS Terminal</span>
+        <h1>Bắt đầu<span>bán hàng dễ dàng</span></h1>
+        <p>Nhập thông tin khách hàng để tạo đơn hàng mới và bắt đầu bán hàng ngay.</p>
+
+        <ul class="pos-hero-features">
+          <li>
+            <div class="feature-icon blue"><i class="bi bi-lightning-charge-fill"></i></div>
+            <div><strong>Thao tác nhanh</strong><span>Tạo đơn và bán hàng chỉ trong vài giây</span></div>
+          </li>
+          <li>
+            <div class="feature-icon teal"><i class="bi bi-people-fill"></i></div>
+            <div><strong>Quản lý khách hàng</strong><span>Lưu thông tin, lịch sử mua hàng</span></div>
+          </li>
+          <li>
+            <div class="feature-icon rose"><i class="bi bi-bar-chart-line-fill"></i></div>
+            <div><strong>Báo cáo tức thời</strong><span>Theo dõi doanh thu theo thời gian thực</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <p class="pos-hero-tagline">“Giải pháp bán hàng cho mọi cửa hàng”</p>
+    </div>
+
+    <div class="pos-gate-form-panel">
+      <div class="new-order-card">
+        <div class="new-order-header">
+          <div class="new-order-icon"><i class="bi bi-receipt-cutoff"></i></div>
+          <span class="new-order-eyebrow">POS Terminal</span>
+          <h1 class="new-order-title">Tạo đơn hàng mới</h1>
+          <p class="new-order-desc">Nhập thông tin khách hàng để bắt đầu bán hàng</p>
+        </div>
+
+        <form id="newOrderForm" novalidate>
+          <div class="field-group">
+            <label class="field-label" for="newOrderPhone">Số điện thoại khách hàng</label>
+            <div class="input-icon-group">
+              <i class="bi bi-telephone"></i>
+              <input
+                type="tel"
+                inputmode="tel"
+                id="newOrderPhone"
+                class="form-control"
+                placeholder="Nhập số điện thoại"
+                autocomplete="off"
+              />
+            </div>
+            <div class="field-error" id="phoneError"></div>
+          </div>
+
+          <div class="field-group mb-2">
+            <label class="field-label" for="newOrderName">Tên khách hàng</label>
+            <div class="input-icon-group">
+              <i class="bi bi-person"></i>
+              <input
+                type="text"
+                id="newOrderName"
+                class="form-control"
+                placeholder="Nhập họ và tên khách hàng"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-brand btn-order-primary w-100 fw-semibold" id="createOrderBtn">
+            <span class="btn-label">
+              Tạo đơn &amp; bắt đầu bán <i class="bi bi-arrow-right ms-1"></i>
+            </span>
+            <span class="btn-loading d-none">
+              <span class="spinner-border spinner-border-sm" role="status"></span> Đang tạo đơn...
+            </span>
+          </button>
+
+          <button type="button" class="btn btn-outline-brand btn-order-secondary w-100" id="skipToGuestBtn">
+            <i class="bi bi-person-fill-add me-1"></i> Bán nhanh cho khách lẻ
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+    <!-- POS workspace: shown after an order has been created -->
+    <main id="posWorkspace" class="page-content d-none">
+      <div class="row g-3">
+        <!-- Product selection -->
+        <div class="col-xl-8">
+          <div class="d-flex gap-2 mb-3 flex-nowrap overflow-auto pb-1" id="categoryBar">
+            <button class="pos-category-pill active" data-category="all">Tất cả</button>
+            <button class="pos-category-pill" data-category="drink">Đồ uống</button>
+            <button class="pos-category-pill" data-category="food">Thức ăn</button>
+            <button class="pos-category-pill" data-category="dessert">Tráng miệng</button>
+            <button class="pos-category-pill" data-category="snack">Ăn vặt</button>
+          </div>
+
+          <div class="product-grid" id="productGrid"><!-- rendered by pos.js --></div>
+        </div>
+
+        <!-- Cart -->
+        <div class="col-xl-4">
+          <div class="cart-panel">
+            <div class="cart-header d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="fw-bold mb-0">Đơn hàng #<span id="currentOrderNo">DH0087</span></h6>
+                <small class="text-muted">Khách hàng: <strong id="currentOrderCustomer">Khách lẻ</strong></small>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-brand" id="newOrderBtn" title="Tạo đơn mới"><i class="bi bi-plus-lg"></i></button>
+                <button class="btn btn-sm btn-outline-secondary" id="clearCartBtn" title="Xoá toàn bộ giỏ hàng"><i class="bi bi-trash3"></i></button>
+              </div>
+            </div>
+
+            <div class="px-3 pt-3">
+              <select class="form-select form-select-sm" id="customerSelect">
+                <option value="guest" selected>Khách lẻ</option>
+                <option value="1">Nguyễn Văn A - 0901 234 567</option>
+                <option value="2">Trần Thị B - 0909 888 999</option>
+              </select>
+            </div>
+
+            <div class="cart-items" id="cartItems">
+              <!-- rendered by pos.js -->
+            </div>
+
+            <div class="cart-note-bar" id="cartNoteBar">
+              <i class="bi bi-info-circle"></i>
+              <span id="cartNoteText"></span>
+            </div>
+
+            <div class="cart-summary">
+              <div class="input-group input-group-sm mb-3">
+                <input type="text" class="form-control" id="voucherCode" placeholder="Mã voucher" aria-label="Mã voucher" />
+                <button class="btn btn-outline-brand" type="button" id="applyVoucherBtn">Áp dụng</button>
+              </div>
+              <div class="small mb-2" id="voucherMessage" aria-live="polite"></div>
+              <div class="summary-row">
+                <span>Tạm tính</span>
+                <span id="subtotal">0₫</span>
+              </div>
+              <div class="summary-row">
+                <span>Giảm giá</span>
+                <span id="discount">0₫</span>
+              </div>
+              <div class="summary-row">
+                <span>Thuế (VAT 8%)</span>
+                <span id="tax">0₫</span>
+              </div>
+              <div class="summary-row total">
+                <span>Tổng cộng</span>
+                <span id="grandTotal">0₫</span>
+              </div>
+
+              <p class="small text-muted mb-3"><i class="bi bi-info-circle me-1"></i>Chọn phương thức thanh toán ở bước tiếp theo.</p>
+
+              <div class="d-flex gap-2 mb-2">
+                <button class="btn btn-outline-brand btn-sm flex-fill" id="holdOrderBtn">Giữ đơn</button>
+                <button class="btn btn-outline-secondary btn-sm flex-fill" id="printBtn">In hoá đơn</button>
+              </div>
+
+              <button class="btn btn-success w-100 py-2 fw-semibold" id="checkoutBtn">
+                Tiếp tục thanh toán <span class="shortcut-hint">F9</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;" id="toastContainer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/pos.js"></script>
+  <script>
+    window.PAGE_TITLE = "Bán hàng";
+    initLayout("client").then(initPos);
+  </script>
+</body>
+</html>

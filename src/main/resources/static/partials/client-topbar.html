@@ -1,0 +1,23 @@
+<header class="pos-console">
+  <nav class="pos-tabs" id="posTabs">
+    <button class="pos-tab active" data-tab="sale">Bán hàng</button>
+    <button class="pos-tab" data-tab="menu">Thực đơn</button>
+    <button class="pos-tab" data-tab="takeaway">Mang về</button>
+    <button class="pos-tab" data-tab="delivery">Giao hàng</button>
+  </nav>
+
+  <div class="pos-console-search">
+    <i class="bi bi-search"></i>
+    <input type="text" id="productSearch" placeholder="Tìm món (F8)" />
+  </div>
+
+  <div class="pos-console-actions">
+    <button class="pos-console-icon" id="refreshPosBtn" title="Làm mới bộ lọc"><i class="bi bi-arrow-clockwise"></i></button>
+    <a href="/admin/dashboard.html" class="pos-console-icon" title="Trang quản trị" data-admin-link><i class="bi bi-speedometer2"></i></a>
+    <div class="pos-console-user">
+      <div class="avatar" data-user-avatar>NV</div>
+      <span class="small ms-1" data-user-name></span>
+    </div>
+    <a href="/login.html" class="pos-console-icon" title="Đăng xuất" data-logout><i class="bi bi-box-arrow-right"></i></a>
+  </div>
+</header>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ca làm việc - POS App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/css/style.css" rel="stylesheet" />
+</head>
+<body>
+
+  <div id="layout-sidebar"></div>
+
+  <div class="app-main">
+    <div id="layout-topbar"></div>
+
+    <main class="page-content">
+
+      <!-- Shift templates -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h6 class="fw-bold mb-0">Ca làm việc</h6>
+        <button class="btn btn-brand" data-bs-toggle="modal" data-bs-target="#shiftTemplateModal">
+          <i class="bi bi-plus-lg me-1"></i> Tạo ca
+        </button>
+      </div>
+
+      <div class="row g-3 mb-4" id="shiftCards">
+        <!-- rendered by admin-shifts.js -->
+      </div>
+
+      <!-- Shift schedule -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h6 class="fw-bold mb-0">Lịch phân ca</h6>
+        <div class="d-flex gap-2 flex-wrap">
+          <input type="date" id="scheduleDate" class="form-control form-control-sm w-auto" />
+          <button class="btn btn-outline-brand" data-bs-toggle="modal" data-bs-target="#assignShiftModal">
+            <i class="bi bi-calendar-plus me-1"></i> Phân ca cho nhân viên
+          </button>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Nhân viên</th>
+                <th>Ca làm</th>
+                <th>Ngày</th>
+                <th>Giờ vào / ra</th>
+                <th>Trạng thái</th>
+                <th class="text-end">Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleTableBody">
+              <!-- rendered by admin-shifts.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Create shift template modal -->
+  <div class="modal fade" id="shiftTemplateModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Tạo ca làm việc</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="shiftForm">
+            <input type="hidden" id="shiftId" />
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Tên ca</label>
+              <input type="text" id="shiftName" class="form-control" placeholder="VD: Ca sáng" />
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Giờ bắt đầu</label>
+                <input type="time" id="shiftStart" class="form-control" value="06:00" />
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Giờ kết thúc</label>
+                <input type="time" id="shiftEnd" class="form-control" value="14:00" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Số nhân viên cần</label>
+              <input type="number" id="shiftRequired" class="form-control" placeholder="3" min="1" />
+            </div>
+            <div class="mb-1">
+              <label class="form-label small fw-semibold">Trạng thái</label>
+              <select id="shiftActive" class="form-select">
+                <option value="true">Đang áp dụng</option>
+                <option value="false">Tạm ngưng</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-brand" id="saveShiftBtn">Lưu ca làm việc</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assign shift modal -->
+  <div class="modal fade" id="assignShiftModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Phân ca cho nhân viên</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="assignForm">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Nhân viên</label>
+              <select id="assignEmployee" class="form-select"></select>
+            </div>
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Ca làm</label>
+                <select id="assignShift" class="form-select"></select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Ngày làm</label>
+                <input type="date" id="assignDate" class="form-control" />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-brand" id="saveAssignBtn">Lưu phân ca</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/admin-shifts.js"></script>
+  <script>
+    window.PAGE_TITLE = "Ca làm việc";
+    initLayout("admin").then(initAdminShifts);
+  </script>
+</body>
+</html>

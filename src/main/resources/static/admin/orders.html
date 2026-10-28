@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hóa đơn - POS App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/css/style.css" rel="stylesheet" />
+</head>
+<body>
+
+  <div id="layout-sidebar"></div>
+
+  <div class="app-main">
+    <div id="layout-topbar"></div>
+
+    <main class="page-content">
+
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div class="d-flex gap-2 flex-wrap">
+          <select class="form-select form-select-sm w-auto">
+            <option>Tất cả trạng thái</option>
+            <option>Hoàn thành</option>
+            <option>Đang xử lý</option>
+            <option>Đã hủy</option>
+          </select>
+          <input type="date" class="form-control form-control-sm w-auto" value="2026-10-16" />
+        </div>
+        <button class="btn btn-outline-brand">
+          <i class="bi bi-download me-1"></i> Xuất Excel
+        </button>
+      </div>
+
+      <div class="table-card">
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Ngày tạo</th>
+                <th>Số SP</th>
+                <th>Tổng tiền</th>
+                <th>Thanh toán</th>
+                <th>Trạng thái</th>
+                <th class="text-end">Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="orderTableBody">
+              <!-- rendered by admin-orders.js -->
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center p-3">
+          <small class="text-muted">Hiển thị 1-5 trong 86 hóa đơn</small>
+          <nav>
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item"><a class="page-link" href="#">Sau</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Order Detail Modal -->
+  <div class="modal fade" id="orderModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Chi tiết đơn #HD1024</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <p class="mb-0 fw-semibold">Nguyễn Văn A</p>
+              <small class="text-muted">16/10/2026, 10:42</small>
+            </div>
+            <span class="badge-status bg-success-subtle text-success align-self-start">Hoàn thành</span>
+          </div>
+          <table class="table table-sm mb-3">
+            <tbody>
+              <tr>
+                <td>Cà phê sữa đá x2</td>
+                <td class="text-end">50.000₫</td>
+              </tr>
+              <tr>
+                <td>Bánh mì trứng x1</td>
+                <td class="text-end">20.000₫</td>
+              </tr>
+              <tr>
+                <td>Trà sữa trân châu x3</td>
+                <td class="text-end">105.000₫</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between small text-muted mb-1">
+            <span>Tạm tính</span><span>175.000₫</span>
+          </div>
+          <div class="d-flex justify-content-between small text-muted mb-1">
+            <span>Thuế VAT (8%)</span><span>10.000₫</span>
+          </div>
+          <div class="d-flex justify-content-between fw-bold fs-5">
+            <span>Tổng cộng</span><span>185.000₫</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-brand"><i class="bi bi-printer me-1"></i>In hóa đơn</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="orderEditModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Cập nhật đơn hàng</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="editOrderBody">
+          <!-- form is rendered by admin-orders.js -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-brand" id="saveOrderChangesBtn">Lưu thay đổi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/admin-orders.js"></script>
+  <script>
+    window.PAGE_TITLE = "Hóa đơn";
+    initLayout("admin").then(initAdminOrders);
+  </script>
+</body>
+</html>

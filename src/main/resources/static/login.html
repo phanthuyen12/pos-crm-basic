@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng nhập - POS App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="/css/style.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="brand-panel">
+      <div class="brand-panel-logo">
+        <div class="logo-box"><i class="bi bi-shop"></i></div>
+        POS App
+      </div>
+
+      <div class="brand-panel-headline">
+        <h2>Quản lý bán hàng gọn nhẹ,<br />vận hành trơn tru mỗi ngày.</h2>
+        <p>Một nền tảng cho cả quầy thu ngân lẫn phòng quản trị — bán hàng, tồn kho, nhân sự và báo cáo trong cùng một nơi.</p>
+
+        <ul class="brand-feature-list">
+          <li><i class="bi bi-lightning-charge"></i> Bán hàng nhanh, hỗ trợ phím tắt</li>
+          <li><i class="bi bi-boxes"></i> Theo dõi tồn kho, nhập hàng tức thời</li>
+          <li><i class="bi bi-bar-chart-line"></i> Báo cáo theo ngày, ca, nhân viên</li>
+        </ul>
+      </div>
+
+      <div class="brand-panel-footer">© 2026 POS App — Demo giao diện tĩnh</div>
+    </div>
+
+    <div class="auth-form-panel">
+      <div class="auth-card">
+        <div class="auth-logo d-lg-none"><i class="bi bi-shop"></i></div>
+        <h4 class="text-center fw-bold mb-1">Đăng nhập</h4>
+        <p class="text-center text-muted mb-4" style="font-size: 0.9rem;">Đăng nhập để bắt đầu bán hàng</p>
+
+        <form id="loginForm">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Mã nhân viên</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
+              <input type="text" id="loginCode" class="form-control border-start-0" placeholder="VD: NV001" value="" required />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Mật khẩu</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock"></i></span>
+              <input type="password" id="loginPassword" class="form-control border-start-0" placeholder="••••••••" required />
+            </div>
+            <div class="text-danger mt-2 small" id="loginError" style="min-height:1.2rem;"></div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="remember" checked />
+              <label class="form-check-label small" for="remember">Ghi nhớ đăng nhập</label>
+            </div>
+            <a href="#" class="small text-brand fw-semibold">Quên mật khẩu?</a>
+          </div>
+          <button type="submit" class="btn btn-brand w-100 py-2 fw-semibold" id="loginBtn">
+            <span class="btn-label">Đăng nhập</span>
+            <span class="btn-loading d-none"><span class="spinner-border spinner-border-sm" role="status"></span> Đang đăng nhập...</span>
+          </button>
+        </form>
+
+        <p class="text-center text-muted mt-4 mb-0" style="font-size: 0.8rem;">
+          Tài khoản demo: NV001 / 123456 (Quản lý) &middot; NV002 / 123456 (Thu ngân)
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/api.js"></script>
+  <script>
+    // Đã đăng nhập thì chuyển thẳng tới trang phù hợp.
+    (function () {
+      const user = getCurrentUser();
+      if (user) {
+        window.location.href = isAdmin(user) ? "/admin/dashboard.html" : "/client/pos.html";
+      }
+    })();
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const code = document.getElementById("loginCode").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const errorEl = document.getElementById("loginError");
+      const btn = document.getElementById("loginBtn");
+
+      errorEl.textContent = "";
+      btn.querySelector(".btn-label").classList.add("d-none");
+      btn.querySelector(".btn-loading").classList.remove("d-none");
+      btn.disabled = true;
+
+      try {
+        const resp = await apiPost("/api/auth/login", { employeeCode: code, password });
+        if (!resp.success) {
+          errorEl.textContent = resp.message || "Đăng nhập thất bại";
+          return;
+        }
+        setCurrentUser(resp.data);
+        window.location.href = isAdmin(resp.data) ? "/admin/dashboard.html" : "/client/pos.html";
+      } catch (err) {
+        errorEl.textContent = "Lỗi kết nối: " + err.message;
+      } finally {
+        btn.querySelector(".btn-label").classList.remove("d-none");
+        btn.querySelector(".btn-loading").classList.add("d-none");
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
